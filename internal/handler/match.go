@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"encoding/json"
+	"log"
 	"net/http"
 	"sort"
 	"text/template"
@@ -16,6 +18,14 @@ type UIHandler struct {
 	RocketchatURL string
 }
 
+type GetAllMatchesHandler struct {
+	DAO *dao.MatchDAO
+}
+
+type GetTableHandler struct {
+	DAO *dao.MatchDAO
+}
+
 func (h *UIHandler) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	indexTpl, err := template.New("index.html").Funcs(getFuncMap()).ParseFiles("index.html")
 	matches, err := h.DAO.GetAllMatches()
@@ -27,6 +37,43 @@ func (h *UIHandler) ServeHTTP(writer http.ResponseWriter, request *http.Request)
 		"table":         createTable(matches),
 		"rocketchatURL": h.RocketchatURL,
 	})
+}
+
+func (h *GetAllMatchesHandler) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
+	matches, err := h.DAO.GetAllMatches()
+	result := make(map[string]interface{})
+	if err != nil {
+		result["success"] = false
+		result["error"] = err.Error()
+		writer.WriteHeader(http.StatusInternalServerError)
+		log.Printf("unable to get list of matches: %v\n", err)
+	} else {
+		result["success"] = true
+		result["error"] = ""
+		result["data"] = matches
+	}
+	sendJSONResponse(writer, result)
+}
+
+func (h *GetTableHandler) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
+	matches, err := h.DAO.GetAllMatches()
+	result := make(map[string]interface{})
+	if err != nil {
+		result["success"] = false
+		result["error"] = err.Error()
+		writer.WriteHeader(http.StatusInternalServerError)
+		log.Printf("unable to get list of matches: %v\n", err)
+	} else {
+		result["success"] = true
+		result["error"] = ""
+		result["data"] = createTable(matches)
+	}
+	sendJSONResponse(writer, result)
+}
+
+func sendJSONResponse(writer http.ResponseWriter, data map[string]interface{}) {
+	writer.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(writer).Encode(data)
 }
 
 func getFuncMap() template.FuncMap {

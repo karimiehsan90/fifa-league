@@ -17,7 +17,7 @@ func main() {
 	dbName := flag.String("db-name", "", "Database Name")
 	dbUser := flag.String("db-user", "", "Database User")
 	dbPass := flag.String("db-pass", "", "Database Pass")
-	rocketchatURL := flag.String("rocketchat-url", "", "Database Pass")
+	rocketchatURL := flag.String("rocketchat-url", "", "Rocketchat URL")
 	flag.Parse()
 
 	matchDAO := &dao.MatchDAO{}
@@ -34,6 +34,15 @@ func main() {
 		DAO:           matchDAO,
 		RocketchatURL: *rocketchatURL,
 	}
+
+	getAllMatchesHandler := &handler.GetAllMatchesHandler{
+		DAO: matchDAO,
+	}
+	getTableHandler := &handler.GetTableHandler{
+		DAO: matchDAO,
+	}
 	http.Handle("/", uiHandler)
+	http.Handle("/api/v1/matches", getAllMatchesHandler)
+	http.Handle("/api/v1/table", getTableHandler)
 	panic(http.ListenAndServe(*webListenAddress, nil))
 }
