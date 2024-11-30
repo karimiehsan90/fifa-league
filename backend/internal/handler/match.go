@@ -108,7 +108,7 @@ func createTable(matches []*entity.Match) []entity.LeagueMember {
 				Team: match.AwayTeam,
 			}
 		}
-		if match.End {
+		if match.End && match.Level == "Group" {
 			// matches
 			homeRank.Matches += 1
 			awayRank.Matches += 1

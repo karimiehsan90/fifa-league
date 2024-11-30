@@ -44,5 +44,6 @@ func main() {
 	http.Handle("/", uiHandler)
 	http.Handle("/api/v1/matches", getAllMatchesHandler)
 	http.Handle("/api/v1/table", getTableHandler)
+	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir("./images"))))
 	panic(http.ListenAndServe(*webListenAddress, nil))
 }
