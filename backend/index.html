@@ -160,6 +160,59 @@ table .col {
     cursor: pointer;
 }
 
+.knockout-match {
+  background-color: #F7B801;
+  height: 50px;
+  width: 200px;
+}
+
+.knockout-round-of-sixteen {
+  margin-bottom: 50%;
+}
+
+.knockout-round-of-eight {
+  margin-bottom: 12%;
+  margin-left: 30%;
+}
+
+.knockout-round-of-eight-title {
+  margin-left: 30%;
+}
+
+.knockout-round-of-four {
+  margin-top: 20%;
+  margin-bottom: 49%;
+  margin-left: 60%;
+}
+
+.knockout-round-of-four-title {
+  margin-left: 60%;
+}
+
+.knockout-round-of-two {
+  margin-top: 55%;
+  margin-bottom: 123%;
+  margin-left: 90%;
+}
+
+.knockout-round-of-two-title {
+  margin-left: 90%;
+}
+
+.knockout-final {
+  margin-top: 130%;
+  margin-left: 120%;
+}
+
+.knockout-final-title {
+  margin-left: 120%;
+}
+
+.knockout-team {
+  color: #1A1A2E;
+  margin: 5px 0px 5px 5px;
+}
+
   </style>
 </head>
 <body>
@@ -188,6 +241,7 @@ table .col {
       <th>Time</th>
     </tr>
     {{- range $i, $match := .matches }}
+    {{- if and (ne $match.HomeTeam "") (ne $match.AwayTeam "") }}
     <tr class="{{ if $match.End }}wpos{{ else if $match | started }}ppos{{ else }}pos{{ end }}" id="match-{{ $match.ID }}">
       <td><img style="width: 50px;border-radius: 50%;" src="{{ $.rocketchatURL }}/avatar/{{ $match.HomeTeam }}" /></td>
       <td>{{ $match.HomeTeam }}</td>
@@ -198,6 +252,7 @@ table .col {
       <td><img style="width: 50px;border-radius: 50%;" src="{{ $.rocketchatURL }}/avatar/{{ $match.AwayTeam }}" /></td>
       <td>{{ $match.StartTime | toPersianTime }}</td>
     </tr>
+    {{- end }}
     {{- end }}
 </table>
 </div>
@@ -251,10 +306,52 @@ table .col {
 </div>
 </div>
 
-<div id="knockout" class="ptable" hidden="true">
-  Knockout-Stage is not started yet. Please wait ...
+<div id="knockout" class="ptable horizontal" hidden="true">
+  <div class="ptable">
+    <div class="knockout-round-of-sixteen-title">Play-off</div>
+  {{- range $match := index .levelMatches "1/16" }}
+  <div class="knockout-match knockout-round-of-sixteen">
+    <div class="knockout-team">{{ $match.HomeTeam | default "TBD" }}</div>
+    <div class="knockout-team">{{ $match.AwayTeam | default "TBD" }}</div>
+  </div>
+  {{- end }}
 </div>
-
+<div class="ptable">
+  <div class="knockout-round-of-eight-title">1/8</div>
+  {{- range $match := index .levelMatches "1/8" }}
+  <div class="knockout-match knockout-round-of-eight">
+    <div class="knockout-team">{{ $match.HomeTeam | default "TBD" }}</div>
+    <div class="knockout-team">{{ $match.AwayTeam | default "TBD" }}</div>
+  </div>
+  {{- end }}
+</div>
+<div class="ptable">
+  <div class="knockout-round-of-four-title">1/4</div>
+{{- range $match := index .levelMatches "1/4" }}
+<div class="knockout-match knockout-round-of-four">
+  <div class="knockout-team">{{ $match.HomeTeam | default "TBD" }}</div>
+  <div class="knockout-team">{{ $match.AwayTeam | default "TBD" }}</div>
+</div>
+{{- end }}
+</div>
+<div class="ptable">
+  <div class="knockout-round-of-two-title">1/2</div>
+  {{- range $match := index .levelMatches "1/2" }}
+  <div class="knockout-match knockout-round-of-two">
+    <div class="knockout-team">{{ $match.HomeTeam | default "TBD" }}</div>
+    <div class="knockout-team">{{ $match.AwayTeam | default "TBD" }}</div>
+  </div>
+  {{- end }}
+  </div>
+  <div class="ptable">
+    <div class="knockout-final-title">Final</div>
+    {{- range $match := index .levelMatches "final" }}
+    <div class="knockout-match knockout-final">
+      <div class="knockout-team">{{ $match.HomeTeam | default "TBD" }}</div>
+      <div class="knockout-team">{{ $match.AwayTeam | default "TBD" }}</div>
+    </div>
+    {{- end }}
+    </div>
 </div>
 
 <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>

@@ -5,7 +5,9 @@ import "time"
 type Match struct {
 	ID        int64     `json:"id"`
 	HomeTeam  string    `json:"home_team"`
+	HomeFrom  int       `json:"home_from"`
 	AwayTeam  string    `json:"away_team"`
+	AwayFrom  int       `json:"away_from"`
 	StartTime time.Time `json:"start_time"`
 	End       bool      `json:"is_end"`
 	HomeGoals int       `json:"home_goals"`
